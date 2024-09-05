@@ -1,82 +1,235 @@
-# lol - Crypto Trading Bot
+# lol - Comprehensive Dual Trading Strategy for 50 TokenX/USDC Pairs
 
-lol is a high-frequency trading bot designed for Binance that executes ETH/USDC trades with a 1% profit margin. It uses a combination of technical indicators like RSI, Moving Averages, and Bollinger Bands to trigger buy and sell orders. The bot is optimized to perform at least 3-4 trades per day, capitalizing on small market movements.
+This repository contains a dual-strategy trading bot designed to execute trades on Binance. The bot monitors 50 TokenX/USDC pairs, splitting capital between two strategies:
 
-## Features
+1. **Stop Loss Strategy**: Uses stop losses to limit potential losses while aiming for a 1% profit on each trade.
+2. **Holding Strategy**: Holds onto assets even if the price dips, waiting until the price recovers for a 1% profit.
 
--   **RSI-Based Entry**: The bot buys ETH when the RSI drops below 40 and shows signs of recovery.
--   **Moving Averages**: Confirms downward momentum using 15-minute and 1-hour moving averages.
--   **Bollinger Bands**: Helps identify price volatility and sets entry points when the price hits the lower band.
--   **Dynamic Limit Orders**: Ensures optimal entry and exit points by using slight offsets below and above the market price.
--   **1% Profit Target**: Sells ETH automatically when the price increases by 1% from the buy price.
+The bot uses **universal technical indicator settings** for both strategies, which remain constant across all tokens.
 
-## Strategy Overview
+## **Capital Allocation**
 
-1. **Buy Trigger**:
+-   **Total Capital**: 10 units (e.g., \$10,000).
 
-    - The bot waits for the following conditions:
-        - **RSI** drops below 40 and begins to recover.
-        - The **15-minute moving average** is still below the **1-hour moving average**, indicating a general downtrend.
-        - The price touches or dips below the **lower Bollinger Band** (on a 15-minute chart).
-    - Once these conditions are met, the bot places a limit buy order slightly below the current price (around 0.2%-0.3%).
+    -   **Stop Loss Strategy**: 5 units (\$5,000).
+    -   **Holding Strategy**: 5 units (\$5,000).
 
-2. **Sell Trigger**:
+-   **Per Trade Allocation**:
 
-    - The bot automatically sets a limit sell order **1% above the buy price**.
-    - Alternatively, it can sell when the price touches or breaks above the **upper Bollinger Band** for a potentially higher profit.
+    -   **Stop Loss Strategy**: \$500 per trade.
+    -   **Holding Strategy**: \$500 per trade.
 
-3. **Stop Loss** _(Optional)_:
-    - You can configure a dynamic stop-loss, such as setting a stop-loss order 1%-2% below the buy price to mitigate losses in a downtrend.
+-   **Monitored Pairs**: 50 TokenX/USDC pairs.
+-   **Active Trades**: Maximum of 10 token pairs per strategy can be in active trades at any time.
 
-## Requirements
+---
 
--   Node.js (>= v14.x)
--   TypeScript (>= v4.x)
--   Binance API Key
--   Technical analysis library (e.g., `technicalindicators`)
--   `ccxt` or another library for connecting to the Binance API
+## **Universal Technical Indicator Settings**
 
-## Installation
+1. **Relative Strength Index (RSI)**
 
-1. Clone the repository:
+    - **Period**: 14
+    - **Timeframe**: 15-minute chart
+    - **Oversold Threshold**: RSI ≤ 40
+    - **Recovery Signal**: RSI begins to rise after dipping below 40.
 
-    ```bash
-    git clone https://github.com/yourusername/lol.git
-    ```
+2. **Moving Averages (MA)**
 
-2. Install the required dependencies:
+    - **Short-Term Moving Average**: 15-minute Exponential Moving Average (EMA)
+    - **Long-Term Moving Average**: 1-hour Exponential Moving Average (EMA)
+    - **Condition**: 15-minute EMA is below the 1-hour EMA.
 
-    ```bash
-    npm install
-    ```
+3. **Bollinger Bands**
+    - **Period**: 20
+    - **Standard Deviation**: 2
+    - **Timeframe**: 15-minute chart
+    - **Lower Band Touch**: Price touches or dips below the lower Bollinger Band.
 
-3. Set up your Binance API key by creating a `.env` file in the project root:
+---
 
-    ```bash
-    BINANCE_API_KEY=your_api_key
-    BINANCE_API_SECRET=your_api_secret
-    ```
+## **Strategy 1: Stop Loss Strategy**
 
-4. Compile the TypeScript code:
-    ```bash
-    npm run build
-    ```
+### **Entry Conditions**
 
-## Usage
+A buy order is triggered when **all** of the following conditions are met:
 
-1. Ensure you've properly configured your API keys.
-2. Run the trading bot:
-    ```bash
-    npm start
-    ```
+1. **RSI Condition**
 
-The bot will now start monitoring the ETH/USDC market, looking for buying opportunities based on RSI, Moving Averages, and Bollinger Bands. Once a trade is made, the bot will set a 1% profit target and wait for the price to reach that point before selling.
+    - RSI(14) on the 15-minute chart drops to **40 or below** and then starts to **rise**.
 
-## Configuration
+2. **Moving Average Condition**
 
-You can adjust the following parameters in the `config.ts` file:
+    - The **15-minute EMA** is below the **1-hour EMA**, confirming a short-term downtrend poised for reversal.
 
--   **RSI Threshold**: Change the RSI level that triggers a buy. Default is set to 40.
--   **Moving Averages Period**: Modify the length of the moving averages used (15-minute, 1-hour).
--   **Bollinger Band Settings**: Adjust the timeframes and standard deviations for the Bollinger Bands.
--   **Profit Margin**: Adjust the target profit percentage (default is 1%).
+3. **Bollinger Band Condition**
+
+    - The price touches or dips below the **lower Bollinger Band** on the 15-minute chart.
+
+4. **Dynamic Buy Order Placement**
+    - Place a **limit buy order** at **0.3% below** the current market price.
+
+### **Exit Conditions**
+
+1. **Profit Target**
+
+    - Set a **limit sell order** at **1% above** the buy price.
+
+2. **Stop Loss**
+    - Set a **stop-loss order** at **1% below** the buy price.
+
+### **Trade Management**
+
+-   **Position Size**: \$500 per trade.
+-   **Risk-to-Reward Ratio**: 1:1 (1% potential profit vs. 1% potential loss).
+-   **Maximum Active Trades**: 10 token pairs (up to \$5,000 in total positions).
+
+---
+
+## **Strategy 2: Holding Strategy**
+
+### **Entry Conditions**
+
+A buy order is triggered when **all** of the following conditions are met (same as the Stop Loss Strategy):
+
+1. **RSI Condition**
+
+    - RSI(14) on the 15-minute chart drops to **40 or below** and then starts to **rise**.
+
+2. **Moving Average Condition**
+
+    - The **15-minute EMA** is below the **1-hour EMA**.
+
+3. **Bollinger Band Condition**
+
+    - The price touches or dips below the **lower Bollinger Band** on the 15-minute chart.
+
+4. **Dynamic Buy Order Placement**
+    - Place a **limit buy order** at **0.3% below** the current market price.
+
+### **Exit Conditions**
+
+1. **Profit Target**
+
+    - Set a **limit sell order** at **1% above** the buy price.
+
+2. **No Stop Loss**
+    - **Do not set a stop-loss order**. If the price dips further, the position is held until the price recovers to achieve the 1% profit target.
+
+### **Trade Management**
+
+-   **Position Size**: \$500 per trade.
+-   **Holding Duration**: Indefinite until the 1% profit target is met.
+-   **Maximum Active Trades**: 10 token pairs (up to \$5,000 in total positions).
+
+---
+
+## **Combined Strategy Execution**
+
+### **Monitoring and Execution**
+
+-   The bot continuously scans the 50 TokenX/USDC pairs for the entry conditions.
+-   When a token meets the entry conditions, and there are available slots (maximum of 10 active trades per strategy), the bot initiates a trade according to the respective strategy.
+
+### **Capital Allocation Per Token**
+
+-   Each token can have a position size of \$500 per strategy, meaning a single token could have positions in both strategies simultaneously if conditions are met and slots are available.
+
+### **Trade Prioritization**
+
+-   If more than 10 tokens meet the entry conditions simultaneously:
+    -   **Priority is given based on**:
+        -   **Liquidity**: Higher trading volume tokens are preferred.
+        -   **Volatility**: Tokens with higher recent volatility may offer quicker opportunities to reach the profit target.
+        -   **Spread**: Tokens with tighter bid-ask spreads are favored to minimize transaction costs.
+
+---
+
+## **Technical Details of Conditions**
+
+### **1. RSI Calculation**
+
+-   **Formula**:
+    \[
+    RSI = 100 - \left( \frac{100}{1 + RS} \right)
+    \]
+    where RS (Relative Strength) = Average Gain over 14 periods / Average Loss over 14 periods.
+-   **Condition**: RSI values **≤ 40** on the 15-minute chart with a subsequent rise.
+
+### **2. Moving Averages**
+
+-   **15-Minute EMA**: Calculated using closing prices on the 15-minute chart.
+-   **1-Hour EMA**: Calculated using closing prices on the 1-hour chart.
+-   **Condition**: The 15-minute EMA is **below** the 1-hour EMA.
+
+### **3. Bollinger Bands**
+
+-   **Middle Band**: 20-period Simple Moving Average (SMA) on the 15-minute chart.
+-   **Upper/Lower Band**: Middle Band ± (2 × Standard Deviation of the last 20 periods).
+-   **Condition**: Price touches or dips below the **Lower Band**.
+
+### **4. Dynamic Buy Order Placement**
+
+-   **Buy Price** = Current Market Price × (1 - 0.003)
+
+### **5. Profit Target and Stop Loss (Stop Loss Strategy)**
+
+-   **Profit Target**: Sell Price = Buy Price × (1 + 0.01)
+-   **Stop Loss**: Stop Loss Price = Buy Price × (1 - 0.01)
+
+---
+
+## **Risk Management**
+
+### **Stop Loss Strategy**
+
+-   **Maximum Loss Per Trade**: 1% of \$500 = \$5.
+-   **Total Maximum Risk**: If all 10 trades hit the stop loss, the maximum loss is \$50.
+-   **Risk-to-Reward Ratio**: 1:1.
+
+### **Holding Strategy**
+
+-   **Maximum Loss Per Trade**: Undefined, as there is no stop loss.
+-   **Risk Mitigation**: Focus on **diversification** across 10 token pairs and prioritization of liquid tokens.
+
+---
+
+## **Operational Workflow**
+
+1. **Initialization**:
+
+    - Load the list of 50 TokenX/USDC pairs.
+    - Allocate capital and set up monitoring for each strategy.
+
+2. **Continuous Monitoring**:
+
+    - For each token pair:
+        - Calculate RSI(14) on the 15-minute chart.
+        - Calculate 15-minute and 1-hour EMAs.
+        - Calculate Bollinger Bands on the 15-minute chart.
+        - Check if all entry conditions are met.
+
+3. **Entry Execution**:
+
+    - If entry conditions are met and there is an available slot:
+        - Place a limit buy order at 0.3% below the current price.
+
+4. **Post-Entry Management**:
+
+    - **Stop Loss Strategy**:
+        - Set limit sell order at 1% above buy price.
+        - Set stop-loss order at 1% below buy price.
+    - **Holding Strategy**:
+        - Set limit sell order at 1% above buy price. No stop-loss order.
+
+5. **Exit Execution**:
+    - Monitor active trades for profit targets or stop losses (Stop Loss Strategy).
+    - Free up slots for new trades upon exiting.
+
+---
+
+## **Additional Considerations**
+
+-   **Market Conditions Adaptability**: Be prepared to pause trading during extreme volatility or illiquid markets.
+-   **Regulatory Compliance**: Ensure adherence to regulations and exchange policies.
+-   **Technical Infrastructure**: Implement robust error handling and fail-safes.
+-   **Security Measures**: Protect API keys and secure sensitive data.
