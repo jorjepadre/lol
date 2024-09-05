@@ -6,7 +6,7 @@ const app: Express = express();
 const port = process.env.PORT || 3000;
 
 app.get("/", (req: Request, res: Response) => {
-    res.send("Arbitrage Bot");
+    res.send("l.0l");
 });
 
 app.listen(port, () => {
