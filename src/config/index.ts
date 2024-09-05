@@ -1,14 +1,14 @@
-// index.ts
-import { rsiConfig } from "@config/rsiConfig";
-import { movingAverageConfig } from "@config/movingAverageConfig";
-import { bollingerBandsConfig } from "@config/bollingerBandsConfig";
-import { dynamicOrderConfig } from "@config/dynamicOrderConfig";
+import { rsiConfig } from "./indicators/rsiConfig";
+import { movingAverageConfig } from "./indicators/movingAverageConfig";
+import { bollingerBandsConfig } from "./indicators/bollingerBandsConfig";
+import { dynamicOrderConfig } from "./orders/dynamicOrderConfig";
 
 export const config = {
     rsiConfig,
     movingAverageConfig,
     bollingerBandsConfig,
     dynamicOrderConfig,
+
     maxActiveTradesPerStrategy: 10, // Maximum number of active trades per strategy
     totalMonitoredPairs: 50, // Total number of TokenX/USDC pairs to monitor
     capitalAllocationPerTrade: 500, // Amount of capital allocated per trade (in USDC)
